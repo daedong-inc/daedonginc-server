@@ -1,10 +1,10 @@
-package com.daedonginc.daedongincserver;
+package com.daedonginc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DaedongincServerApplicationTests {
+class DaedongincInterfaceApplicationTests {
 
 	@Test
 	void contextLoads() {

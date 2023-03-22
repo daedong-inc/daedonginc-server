@@ -1,13 +1,14 @@
-package com.daedonginc.daedongincserver;
+package com.daedonginc;
+
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DaedongincServerApplication {
+public class DaedongincInterfaceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DaedongincServerApplication.class, args);
+		SpringApplication.run(DaedongincInterfaceApplication.class, args);
 	}
 
 }
