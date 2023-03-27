@@ -31,12 +31,12 @@ public class CompanyHistoryEntity extends BaseEntity {
 	protected CompanyHistoryEntity() {
 	}
 
-	public CompanyHistoryEntity(int historyYear, String content) {
+	private CompanyHistoryEntity(int historyYear, String content) {
 		this.historyYear = historyYear;
 		this.content = content;
 	}
 
-	public static CompanyHistoryEntity of(int historyYear, String content) {
+	public static CompanyHistoryEntity createComponyHistory(int historyYear, String content) {
 		return new CompanyHistoryEntity(historyYear, content);
 	}
 
