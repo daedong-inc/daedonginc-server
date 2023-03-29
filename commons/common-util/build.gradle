@@ -1,3 +1,7 @@
+dependencies {
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core'
+}
+
 bootJar {
     enabled(false)
 }
