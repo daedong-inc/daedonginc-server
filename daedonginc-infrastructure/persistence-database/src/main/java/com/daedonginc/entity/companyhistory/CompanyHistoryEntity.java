@@ -36,7 +36,7 @@ public class CompanyHistoryEntity extends BaseEntity {
 		this.content = content;
 	}
 
-	public static CompanyHistoryEntity createComponyHistory(int historyYear, String content) {
+	public static CompanyHistoryEntity newInstance(int historyYear, String content) {
 		return new CompanyHistoryEntity(historyYear, content);
 	}
 

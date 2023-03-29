@@ -21,7 +21,7 @@ public class CompanyHistoryCommand {
 	}
 
 	public CompanyHistoryEntity save(final int year, final String content) {
-		CompanyHistoryEntity companyHistoryEntity = CompanyHistoryEntity.createComponyHistory(year, content);
+		CompanyHistoryEntity companyHistoryEntity = CompanyHistoryEntity.newInstance(year, content);
 		return companyHistoryRepository.save(companyHistoryEntity);
 	}
 
