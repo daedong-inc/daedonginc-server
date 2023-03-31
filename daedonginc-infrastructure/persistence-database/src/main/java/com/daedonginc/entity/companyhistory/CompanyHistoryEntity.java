@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "company_history")
-@Where(clause = "deleted is false")
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "update company_history set deleted = true where id = ?")
 public class CompanyHistoryEntity extends BaseEntity {
 	@Id
@@ -28,16 +28,25 @@ public class CompanyHistoryEntity extends BaseEntity {
 
 	private String content;
 
+	private int sort;
+
 	protected CompanyHistoryEntity() {
 	}
 
-	private CompanyHistoryEntity(int historyYear, String content) {
+	private CompanyHistoryEntity(int historyYear, String content, int sort) {
 		this.historyYear = historyYear;
 		this.content = content;
+		this.sort = sort;
 	}
 
-	public static CompanyHistoryEntity newInstance(int historyYear, String content) {
-		return new CompanyHistoryEntity(historyYear, content);
+	public static CompanyHistoryEntity of(int historyYear, String content, int sort) {
+		return new CompanyHistoryEntity(historyYear, content, sort);
+	}
+
+	public void update(int historyYear, String content, int sort) {
+		this.historyYear = historyYear;
+		this.content = content;
+		this.sort = sort;
 	}
 
 	public Long getId() {
@@ -50,5 +59,9 @@ public class CompanyHistoryEntity extends BaseEntity {
 
 	public String getContent() {
 		return content;
+	}
+
+	public int getSort() {
+		return sort;
 	}
 }
