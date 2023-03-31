@@ -1,6 +1,9 @@
 package com.daedonginc.repository.companyhistory;
 
+import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Sort;
 
 import com.daedonginc.entity.companyhistory.CompanyHistoryEntity;
 
@@ -14,4 +17,6 @@ public interface CompanyHistoryRepository {
 	Optional<CompanyHistoryEntity> findById(Long companyHistoryId);
 
 	void deleteById(Long companyHistoryId);
+
+	List<CompanyHistoryEntity> findAll(Sort sort);
 }
