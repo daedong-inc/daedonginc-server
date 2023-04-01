@@ -15,6 +15,6 @@ import com.daedonginc.entity.popup.PopupEntity;
  */
 public interface PopupJpaRepository extends JpaRepository<PopupEntity, Long>, PopupRepository {
 
-	@Query("SELECT p FROM PopupEntity p WHERE p.startDate <= :now1 AND p.endDate >= :now2 order by p.sort")
-	List<PopupEntity> findAllActivePopup(LocalDateTime now1, LocalDateTime now2, Sort sort);
+	@Query("SELECT p FROM PopupEntity p WHERE p.startDate <= :now AND p.endDate >= :now order by p.sort")
+	List<PopupEntity> findAllActivePopup(LocalDateTime now, Sort sort);
 }

@@ -36,7 +36,6 @@ public class PopupQuery {
 	public List<PopupEntity> findAllActivePopup() {
 		return popupRepository.findAllActivePopup(
 				LocalDateTime.now(),
-				LocalDateTime.now(),
 				Sort.by(Sort.Direction.ASC, "sort")
 		);
 	}

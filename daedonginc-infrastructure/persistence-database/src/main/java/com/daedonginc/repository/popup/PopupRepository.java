@@ -21,6 +21,6 @@ public interface PopupRepository {
 
 	List<PopupEntity> findAll();
 
-	List<PopupEntity> findAllActivePopup(LocalDateTime now1, LocalDateTime now2, Sort sort);
+	List<PopupEntity> findAllActivePopup(LocalDateTime now, Sort sort);
 
 }
