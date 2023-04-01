@@ -20,9 +20,17 @@ public class ClientCommand {
 		this.clientRepository = clientRepository;
 	}
 
-	public ClientEntity save(final String name, final String imageUrl, final String clickUrl) {
-		ClientEntity clientEntity = ClientEntity.newInstance(name, imageUrl, clickUrl);
+	public ClientEntity save(final String name, final String imageUrl, final String clickUrl, final int sort) {
+		ClientEntity clientEntity = ClientEntity.newInstance(name, imageUrl, clickUrl, sort);
 		return clientRepository.save(clientEntity);
+	}
+
+	public void update(final Long clientId, final String name, final String imageUrl, final String clickUrl,
+			final int sort) {
+		ClientEntity clientEntity = clientRepository.findById(clientId)
+				.orElseThrow(() -> new NotFoundClientException(clientId));
+		clientEntity.update(name, imageUrl, clickUrl, sort);
+		clientRepository.save(clientEntity);
 	}
 
 	public void deleteById(final Long clientId) {

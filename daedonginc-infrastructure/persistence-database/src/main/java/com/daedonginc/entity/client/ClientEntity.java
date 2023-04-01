@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "client")
-@Where(clause = "deleted is false")
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "update client set deleted = true where id = ?")
 public class ClientEntity extends BaseEntity {
 	@Id
@@ -30,17 +30,27 @@ public class ClientEntity extends BaseEntity {
 
 	private String clickUrl;
 
+	private int sort;
+
 	protected ClientEntity() {
 	}
 
-	private ClientEntity(String name, String imageUrl, String clickUrl) {
+	private ClientEntity(final String name, final String imageUrl, final String clickUrl, final int sort) {
 		this.name = name;
 		this.imageUrl = imageUrl;
 		this.clickUrl = clickUrl;
+		this.sort = sort;
 	}
 
-	public static ClientEntity newInstance(String name, String imageUrl, String clickUrl) {
-		return new ClientEntity(name, imageUrl, clickUrl);
+	public static ClientEntity newInstance(final String name, final String imageUrl, final String clickUrl, int sort) {
+		return new ClientEntity(name, imageUrl, clickUrl, sort);
+	}
+
+	public void update(final String name, final String imageUrl, final String clickUrl, final int sort) {
+		this.name = name;
+		this.imageUrl = imageUrl;
+		this.clickUrl = clickUrl;
+		this.sort = sort;
 	}
 
 	public Long getId() {
@@ -57,5 +67,9 @@ public class ClientEntity extends BaseEntity {
 
 	public String getClickUrl() {
 		return clickUrl;
+	}
+
+	public int getSort() {
+		return sort;
 	}
 }

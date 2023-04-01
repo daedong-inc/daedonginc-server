@@ -1,5 +1,7 @@
 package com.daedonginc.service.client;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,5 +25,9 @@ public class ClientQuery {
 	public ClientEntity findById(final Long clientId) {
 		return clientRepository.findById(clientId)
 				.orElseThrow(() -> new NotFoundClientException(clientId));
+	}
+
+	public Page<ClientEntity> findAll(final Pageable pageable) {
+		return clientRepository.findAll(pageable);
 	}
 }
