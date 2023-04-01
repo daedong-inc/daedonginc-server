@@ -1,5 +1,7 @@
 package com.daedonginc.service.popup;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +22,24 @@ public class PopupCommand {
 		this.popupRepository = popupRepository;
 	}
 
-	public PopupEntity save(final String name, final String imageUrl, final String clickUrl) {
-		PopupEntity popupEntity = PopupEntity.newInstance(name, imageUrl, clickUrl);
+	public PopupEntity save(
+			final String name,
+			final String imageUrl,
+			final String clickUrl,
+			final int sort,
+			final LocalDateTime startDate,
+			final LocalDateTime endDate
+	) {
+		PopupEntity popupEntity = PopupEntity.newInstance(name, imageUrl, clickUrl, sort, startDate, endDate);
 		return popupRepository.save(popupEntity);
+	}
+
+	public void update(final Long id, final String name, final String imageUrl, final String clickUrl,
+			final int sort, final LocalDateTime startDate, final LocalDateTime endDate) {
+		PopupEntity popupEntity = popupRepository.findById(id)
+				.orElseThrow(() -> new NotFoundPopupException(id));
+		popupEntity.update(name, imageUrl, clickUrl, sort, startDate, endDate);
+		popupRepository.save(popupEntity);
 	}
 
 	public void deleteById(final Long popupId) {

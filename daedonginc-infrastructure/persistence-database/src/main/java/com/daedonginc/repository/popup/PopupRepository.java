@@ -1,6 +1,10 @@
 package com.daedonginc.repository.popup;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Sort;
 
 import com.daedonginc.entity.popup.PopupEntity;
 
@@ -14,4 +18,9 @@ public interface PopupRepository {
 	Optional<PopupEntity> findById(Long popupId);
 
 	void deleteById(Long popupId);
+
+	List<PopupEntity> findAll();
+
+	List<PopupEntity> findAllActivePopup(LocalDateTime now1, LocalDateTime now2, Sort sort);
+
 }
