@@ -68,9 +68,14 @@ public class PopupEntity extends BaseEntity {
 		return new PopupEntity(name, imageUrl, clickUrl, sort, startDate, endDate);
 	}
 
-	public void update(final String name, final String imageUrl, final String clickUrl, final int sort,
+	public void update(
+			final String name,
+			final String imageUrl,
+			final String clickUrl,
+			final int sort,
 			final LocalDateTime startDate,
-			final LocalDateTime endDate) {
+			final LocalDateTime endDate
+	) {
 		this.name = name;
 		this.imageUrl = imageUrl;
 		this.clickUrl = clickUrl;
