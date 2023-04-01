@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.daedonginc.popup.excepion.StartDateLaterThanEndDateException;
 import com.daedonginc.service.companyhistory.exception.NotFoundCompanyHistoryException;
+import com.daedonginc.service.popup.exception.NotFoundPopupException;
 
 /**
  * @author domo
@@ -28,6 +30,18 @@ public class ApiRestControllerAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(NotFoundCompanyHistoryException.class)
 	ErrorResponseDto handleException(NotFoundCompanyHistoryException e) {
+		return ErrorResponseDto.toErrorResponseDto(e, e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(NotFoundPopupException.class)
+	ErrorResponseDto handleException(NotFoundPopupException e) {
+		return ErrorResponseDto.toErrorResponseDto(e, e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(StartDateLaterThanEndDateException.class)
+	ErrorResponseDto handleException(StartDateLaterThanEndDateException e) {
 		return ErrorResponseDto.toErrorResponseDto(e, e.getMessage());
 	}
 
