@@ -15,6 +15,13 @@ public enum CategoryLevel {
 		this.description = description;
 	}
 
+	public CategoryLevel nextLevel() {
+		if (this == LARGE) {
+			return MIDDLE;
+		}
+		return DETAIL;
+	}
+
 	public String getDescription() {
 		return description;
 	}
