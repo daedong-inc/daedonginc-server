@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.daedonginc.popup.excepion.StartDateLaterThanEndDateException;
+import com.daedonginc.service.category.exception.DetailLevelIsCanNotHaveSubLevelException;
+import com.daedonginc.service.category.exception.NotFoundCategoryException;
+import com.daedonginc.service.category.exception.NotFoundParentCategoryException;
 import com.daedonginc.service.companyhistory.exception.NotFoundCompanyHistoryException;
 import com.daedonginc.service.popup.exception.NotFoundPopupException;
 
@@ -42,6 +45,24 @@ public class ApiRestControllerAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(StartDateLaterThanEndDateException.class)
 	ErrorResponseDto handleException(StartDateLaterThanEndDateException e) {
+		return ErrorResponseDto.toErrorResponseDto(e, e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(NotFoundCategoryException.class)
+	ErrorResponseDto handleException(NotFoundCategoryException e) {
+		return ErrorResponseDto.toErrorResponseDto(e, e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(NotFoundParentCategoryException.class)
+	ErrorResponseDto handleException(NotFoundParentCategoryException e) {
+		return ErrorResponseDto.toErrorResponseDto(e, e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(DetailLevelIsCanNotHaveSubLevelException.class)
+	ErrorResponseDto handleException(DetailLevelIsCanNotHaveSubLevelException e) {
 		return ErrorResponseDto.toErrorResponseDto(e, e.getMessage());
 	}
 

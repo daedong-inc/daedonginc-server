@@ -1,5 +1,6 @@
 package com.daedonginc.entity.category;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
@@ -16,6 +17,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -26,7 +28,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "category")
-@Where(clause = "deleted is false")
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "update category set deleted = true where id = ?")
 public class CategoryEntity extends BaseEntity {
 	@Id
@@ -34,10 +36,11 @@ public class CategoryEntity extends BaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_id")
 	private CategoryEntity parent;
 
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-	private List<CategoryEntity> children;
+	private List<CategoryEntity> children = new ArrayList<>();
 
 	private String name;
 
@@ -53,12 +56,18 @@ public class CategoryEntity extends BaseEntity {
 		this.categoryLevel = categoryLevel;
 	}
 
-	public static CategoryEntity newParentInstance(String name, CategoryLevel categoryLevel) {
-		return new CategoryEntity(null, name, categoryLevel);
+	public static CategoryEntity newParentInstance(String name) {
+		return new CategoryEntity(null, name, CategoryLevel.LARGE);
 	}
 
 	public static CategoryEntity newChildrenInstance(CategoryEntity parent, String name, CategoryLevel categoryLevel) {
 		return new CategoryEntity(parent, name, categoryLevel);
+	}
+
+	public void update(CategoryEntity parentCategoryEntity, String name, CategoryLevel categoryLevel) {
+		this.parent = parentCategoryEntity;
+		this.name = name;
+		this.categoryLevel = categoryLevel;
 	}
 
 	public Long getId() {
