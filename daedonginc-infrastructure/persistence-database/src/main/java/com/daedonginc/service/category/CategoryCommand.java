@@ -32,11 +32,11 @@ public class CategoryCommand {
 		CategoryEntity parentCategoryEntity = categoryRepository.findById(parentCategoryId)
 				.orElseThrow(() -> new NotFoundParentCategoryException(parentCategoryId));
 
-		if (parentCategoryEntity.getCategoryLevel() == CategoryLevel.DETAIL) {
-			throw new DetailLevelIsCanNotHaveSubLevelException("소분류는 하위 카테고리를 가질 수 없습니다.");
+		if (parentCategoryEntity.getCategoryLevel() == CategoryLevel.MIDDLE) {
+			throw new DetailLevelIsCanNotHaveSubLevelException("중분류는 하위 카테고리를 가질 수 없습니다.");
 		}
 		CategoryEntity categoryEntity = CategoryEntity.newChildrenInstance(parentCategoryEntity, name,
-				parentCategoryEntity.getCategoryLevel().nextLevel());
+				CategoryLevel.MIDDLE);
 		return categoryRepository.save(categoryEntity);
 	}
 
@@ -58,6 +58,6 @@ public class CategoryCommand {
 		CategoryEntity parentCategoryEntity = categoryRepository.findById(parentId)
 				.orElseThrow(() -> new NotFoundParentCategoryException(parentId));
 
-		categoryEntity.update(parentCategoryEntity, name, parentCategoryEntity.getCategoryLevel().nextLevel());
+		categoryEntity.update(parentCategoryEntity, name, CategoryLevel.MIDDLE);
 	}
 }
