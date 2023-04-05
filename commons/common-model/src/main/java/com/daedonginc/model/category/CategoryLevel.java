@@ -6,20 +6,12 @@ package com.daedonginc.model.category;
  */
 public enum CategoryLevel {
 	LARGE("대분류"),
-	MIDDLE("중분류"),
-	DETAIL("소분류");
+	MIDDLE("중분류");
 
 	private final String description;
 
 	CategoryLevel(String description) {
 		this.description = description;
-	}
-
-	public CategoryLevel nextLevel() {
-		if (this == LARGE) {
-			return MIDDLE;
-		}
-		return DETAIL;
 	}
 
 	public String getDescription() {
