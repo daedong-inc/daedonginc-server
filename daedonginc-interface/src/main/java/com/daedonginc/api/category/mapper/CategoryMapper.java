@@ -1,6 +1,5 @@
 package com.daedonginc.api.category.mapper;
 
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import com.daedonginc.api.category.dto.CategoryResponseDto;
@@ -16,7 +15,7 @@ public class CategoryMapper {
 				category.id(),
 				category.name(),
 				category.level(),
-				category.children() == null ? new ArrayList<>() : category.children().stream()
+				category.children().stream()
 						.map(CategoryMapper::toResponseDto)
 						.collect(Collectors.toList())
 		);
