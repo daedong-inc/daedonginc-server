@@ -1,6 +1,5 @@
 package com.daedonginc.category.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,23 +26,7 @@ public class QueryCategoryAllByParentId implements QueryCategoryAllByParentIdUse
 	@Override
 	public List<Category> query(Query query) {
 		return categoryQuery.findAllByParentId(query.ParentCategoryId()).stream()
-				.map(categoryEntity -> new Category(
-						categoryEntity.getId(),
-						categoryEntity.getName(),
-						categoryEntity.getCategoryLevel().name(),
-						categoryEntity.getChildren().stream()
-								.map(child -> new Category(
-										child.getId(),
-										child.getName(),
-										child.getCategoryLevel().name(),
-										child.getChildren().stream()
-												.map(grandChild -> new Category(
-														grandChild.getId(),
-														grandChild.getName(),
-														grandChild.getCategoryLevel().name(),
-														new ArrayList<>()))
-												.collect(Collectors.toList())
-								)).collect(Collectors.toList())
-				)).collect(Collectors.toList());
+				.map(categoryEntity -> Category.from(categoryEntity))
+				.collect(Collectors.toList());
 	}
 }
