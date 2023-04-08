@@ -9,4 +9,5 @@ import com.daedonginc.entity.product.ProductEntity;
  * Created on 2023/03/25
  */
 public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long>, ProductRepository {
+	long count();
 }

@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "product")
-@Where(clause = "deleted is false")
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "update product set deleted = true where id = ?")
 public class ProductEntity extends BaseEntity {
 	@Id

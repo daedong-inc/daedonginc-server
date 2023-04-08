@@ -1,5 +1,7 @@
 package com.daedonginc.service.product;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,5 +25,13 @@ public class ProductQuery {
 	public ProductEntity findById(final Long productId) {
 		return productRepository.findById(productId)
 				.orElseThrow(() -> new NotFoundProductException(productId));
+	}
+
+	public Page<ProductEntity> findAll(final Pageable pageable) {
+		return productRepository.findAll(pageable);
+	}
+
+	public Long count() {
+		return productRepository.count();
 	}
 }
