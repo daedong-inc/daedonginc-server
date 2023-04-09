@@ -62,6 +62,24 @@ public class ProductEntity extends BaseEntity {
 		return new ProductEntity(category, name, volume, size, partMaterial, description, imageUrl);
 	}
 
+	public void update(
+			final CategoryEntity categoryEntity,
+			final String name,
+			final int volume,
+			final String size,
+			final String partMaterial,
+			final String description,
+			final String imageUrl
+	) {
+		this.category = categoryEntity;
+		this.name = name;
+		this.volume = volume;
+		this.size = size;
+		this.partMaterial = partMaterial;
+		this.description = description;
+		this.imageUrl = imageUrl;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -93,4 +111,5 @@ public class ProductEntity extends BaseEntity {
 	public String getImageUrl() {
 		return imageUrl;
 	}
+
 }
