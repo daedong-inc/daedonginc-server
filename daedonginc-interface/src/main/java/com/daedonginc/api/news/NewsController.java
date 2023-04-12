@@ -14,6 +14,7 @@ import com.daedonginc.api.news.dto.CreateNewsRequestDto;
 import com.daedonginc.api.news.dto.NewsResponseDto;
 import com.daedonginc.api.news.mapper.NewsMapper;
 import com.daedonginc.model.news.NewsType;
+import com.daedonginc.news.domain.News;
 import com.daedonginc.news.usecase.CommandCreateNewsUserCase;
 import com.daedonginc.news.usecase.QueryNewsAllByNewsTypeUseCase;
 import com.daedonginc.news.usecase.QueryNewsByIdAndNewsTypeUseCase;
@@ -62,15 +63,16 @@ public class NewsController {
 	}
 
 	@PostMapping
-	public void createNews(
+	public NewsResponseDto createNews(
 			@RequestBody @Validated final CreateNewsRequestDto dto
 	) {
-		commandCreateNewsUserCase.command(
+		News news = commandCreateNewsUserCase.command(
 				new CommandCreateNewsUserCase.Command(
 						dto.newsType(),
 						dto.title(),
 						dto.content()
 				)
 		);
+		return NewsMapper.toResponseDto(news);
 	}
 }
