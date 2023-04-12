@@ -13,7 +13,7 @@ import com.daedonginc.service.news.NewsQuery;
  * Created on 2023/04/11
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class QueryNewsByIdAndNewsType implements QueryNewsByIdAndNewsTypeUseCase {
 	private final NewsQuery newsQuery;
 
@@ -24,6 +24,7 @@ public class QueryNewsByIdAndNewsType implements QueryNewsByIdAndNewsTypeUseCase
 	@Override
 	public News query(final Query query) {
 		NewsEntity newsEntity = newsQuery.findByIdAndNewsType(query.id(), query.newsType());
+		newsEntity.view();
 		return new News(
 				newsEntity.getId(),
 				newsEntity.getNewsType(),

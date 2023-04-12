@@ -31,4 +31,10 @@ public class NewsCommand {
 				.orElseThrow(() -> new NotFoundNewsException(newsId));
 		newsRepository.deleteById(newsEntity.getId());
 	}
+
+	public void update(Long newsId, NewsType newsType, String title, String content) {
+		NewsEntity newsEntity = newsRepository.findById(newsId)
+				.orElseThrow(() -> new NotFoundNewsException(newsId));
+		newsEntity.update(newsType, title, content);
+	}
 }
