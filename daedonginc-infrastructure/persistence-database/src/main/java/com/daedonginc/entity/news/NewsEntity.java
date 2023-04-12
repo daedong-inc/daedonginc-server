@@ -6,6 +6,7 @@ import org.hibernate.annotations.Where;
 import com.daedonginc.config.BaseEntity;
 import com.daedonginc.model.news.NewsType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,7 +21,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "news")
-@Where(clause = "deleted is false")
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "update news set deleted = true where id = ?")
 public class NewsEntity extends BaseEntity {
 	@Id
@@ -32,6 +33,7 @@ public class NewsEntity extends BaseEntity {
 
 	private String title;
 
+	@Column(columnDefinition = "TEXT")
 	private String content;
 
 	private int viewCount;
