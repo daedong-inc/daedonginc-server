@@ -51,6 +51,12 @@ public class NewsEntity extends BaseEntity {
 		return new NewsEntity(newsType, title, content);
 	}
 
+	public void update(NewsType newsType, String title, String content) {
+		this.newsType = newsType;
+		this.title = title;
+		this.content = content;
+	}
+
 	public NewsEntity view() {
 		this.viewCount++;
 		return this;
