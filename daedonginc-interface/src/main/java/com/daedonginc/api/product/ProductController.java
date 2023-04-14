@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daedonginc.aop.AdminLoginCheck;
 import com.daedonginc.api.product.dto.CreateProductRequestDto;
 import com.daedonginc.api.product.dto.ProductResponseDto;
 import com.daedonginc.api.product.dto.UpdateProductRequestDto;
@@ -68,6 +69,7 @@ public class ProductController {
 		);
 	}
 
+	@AdminLoginCheck
 	@PostMapping
 	public ProductResponseDto createProduct(
 			@RequestBody @Validated final CreateProductRequestDto dto) {
@@ -86,6 +88,7 @@ public class ProductController {
 		return ProductMapper.toResponseDto(product);
 	}
 
+	@AdminLoginCheck
 	@PutMapping("/{id}")
 	public void updateProduct(
 			@PathVariable final Long id,
@@ -105,6 +108,7 @@ public class ProductController {
 		);
 	}
 
+	@AdminLoginCheck
 	@DeleteMapping("/{id}")
 	public void deleteProduct(
 			@PathVariable final Long id

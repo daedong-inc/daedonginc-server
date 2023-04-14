@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daedonginc.aop.AdminLoginCheck;
 import com.daedonginc.api.client.dto.ClientResponseDto;
 import com.daedonginc.api.client.dto.CreateClientRequestDto;
 import com.daedonginc.api.client.dto.UpdateClientRequestDto;
@@ -53,6 +54,7 @@ public class ClientRestController {
 		).map(ClientMapper::toResponseDto);
 	}
 
+	@AdminLoginCheck
 	@PostMapping
 	public ClientResponseDto createClient(
 			@RequestBody @Validated final CreateClientRequestDto dto
@@ -67,6 +69,7 @@ public class ClientRestController {
 		return ClientMapper.toResponseDto(client);
 	}
 
+	@AdminLoginCheck
 	@PutMapping("{id}")
 	public void updateClient(
 			@PathVariable final Long id,
@@ -82,6 +85,7 @@ public class ClientRestController {
 				));
 	}
 
+	@AdminLoginCheck
 	@DeleteMapping("{id}")
 	public void deleteClient(@PathVariable final Long id) {
 		commandDeleteClientUseCase.command(new CommandDeleteClientUseCase.Command(id));

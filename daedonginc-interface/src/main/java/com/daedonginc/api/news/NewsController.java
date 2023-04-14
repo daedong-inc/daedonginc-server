@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daedonginc.aop.AdminLoginCheck;
 import com.daedonginc.api.news.dto.CreateNewsRequestDto;
 import com.daedonginc.api.news.dto.NewsResponseDto;
 import com.daedonginc.api.news.mapper.NewsMapper;
@@ -72,6 +73,7 @@ public class NewsController {
 		);
 	}
 
+	@AdminLoginCheck
 	@PostMapping
 	public NewsResponseDto createNews(
 			@RequestBody @Validated final CreateNewsRequestDto dto
@@ -86,6 +88,7 @@ public class NewsController {
 		return NewsMapper.toResponseDto(news);
 	}
 
+	@AdminLoginCheck
 	@PutMapping("/{id}")
 	public void updateNews(
 			@PathVariable final Long id,
@@ -101,6 +104,7 @@ public class NewsController {
 		);
 	}
 
+	@AdminLoginCheck
 	@DeleteMapping("/{id}")
 	public void deleteNews(
 			@PathVariable final Long id

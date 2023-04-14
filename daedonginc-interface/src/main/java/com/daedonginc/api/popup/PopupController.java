@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daedonginc.aop.AdminLoginCheck;
 import com.daedonginc.api.popup.dto.CreatePopupRequestDto;
 import com.daedonginc.api.popup.dto.PopupResponseDto;
 import com.daedonginc.api.popup.mapper.PopupMapper;
@@ -50,6 +51,7 @@ public class PopupController {
 		this.commandDeletePopupUseCase = commandDeletePopupUseCase;
 	}
 
+	@AdminLoginCheck
 	@GetMapping
 	public List<PopupResponseDto> popupAll() {
 		return queryPopupAllUseCase.query().stream()
@@ -62,6 +64,7 @@ public class PopupController {
 		return queryPopupActiveAllUseCase.query();
 	}
 
+	@AdminLoginCheck
 	@PostMapping
 	public PopupResponseDto createPopup(
 			@RequestBody @Validated final CreatePopupRequestDto dto
@@ -78,6 +81,7 @@ public class PopupController {
 		return PopupMapper.toResponseDto(popup);
 	}
 
+	@AdminLoginCheck
 	@PutMapping("{id}")
 	public void updatePopup(
 			@PathVariable final Long id,
@@ -94,6 +98,7 @@ public class PopupController {
 		));
 	}
 
+	@AdminLoginCheck
 	@DeleteMapping("{id}")
 	public void deletePopup(@PathVariable final Long id) {
 		commandDeletePopupUseCase.command(new CommandDeletePopupUseCase.Command(id));

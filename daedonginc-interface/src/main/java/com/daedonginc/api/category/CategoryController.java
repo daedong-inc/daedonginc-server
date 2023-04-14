@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daedonginc.aop.AdminLoginCheck;
 import com.daedonginc.api.category.dto.CategoryResponseDto;
 import com.daedonginc.api.category.dto.CreateCategoryRequestDto;
 import com.daedonginc.api.category.dto.UpdateCategoryRequestDto;
@@ -66,6 +67,7 @@ public class CategoryController {
 				.collect(Collectors.toList());
 	}
 
+	@AdminLoginCheck
 	@PostMapping
 	public CategoryResponseDto createCategory(
 			@RequestBody @Validated final CreateCategoryRequestDto createCategoryRequestDto
@@ -79,6 +81,7 @@ public class CategoryController {
 		return CategoryMapper.toResponseDto(category);
 	}
 
+	@AdminLoginCheck
 	@PutMapping("/{id}")
 	public void updateCategory(
 			@PathVariable final Long id,
@@ -93,6 +96,7 @@ public class CategoryController {
 		);
 	}
 
+	@AdminLoginCheck
 	@DeleteMapping("/{id}")
 	public void deleteCategory(@PathVariable final Long id) {
 		commandDeleteCategoryUseCase.command(
