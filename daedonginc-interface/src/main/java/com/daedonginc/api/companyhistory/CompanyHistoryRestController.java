@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daedonginc.aop.AdminLoginCheck;
 import com.daedonginc.api.companyhistory.dto.CompanyHistoryResponseDto;
 import com.daedonginc.api.companyhistory.dto.CreateCompanyHistoryRequestDto;
 import com.daedonginc.api.companyhistory.dto.UpdateCompanyHistoryRequestDto;
@@ -54,6 +55,7 @@ public class CompanyHistoryRestController {
 				.collect(Collectors.toList());
 	}
 
+	@AdminLoginCheck
 	@PostMapping
 	public CompanyHistoryResponseDto createCompanyHistory(
 			@RequestBody @Validated final CreateCompanyHistoryRequestDto dto
@@ -67,6 +69,7 @@ public class CompanyHistoryRestController {
 		return CompanyHistoryMapper.toResponseDto(companyHistory);
 	}
 
+	@AdminLoginCheck
 	@PutMapping("{id}")
 	public void updateCompanyHistory(
 			@PathVariable final Long id,
@@ -77,6 +80,7 @@ public class CompanyHistoryRestController {
 		);
 	}
 
+	@AdminLoginCheck
 	@DeleteMapping("{id}")
 	public void deleteCompanyHistory(@PathVariable final Long id) {
 		commandDeleteComponyHistoryUseCase.command(
