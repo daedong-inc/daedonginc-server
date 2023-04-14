@@ -3,7 +3,6 @@ package com.daedonginc.service.admin;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.daedonginc.entity.admin.AdminEntity;
 import com.daedonginc.repository.admin.AdminRepository;
 import com.daedonginc.service.admin.exception.NotFoundAdminException;
 
@@ -20,9 +19,8 @@ public class AdminQuery {
 		this.adminRepository = adminRepository;
 	}
 
-	public Long login(String name, String password) {
-		AdminEntity adminEntity = adminRepository.findByNameAndPassword(name, password)
-				.orElseThrow(() -> new NotFoundAdminException(name, password));
-		return adminEntity.getId();
+	public void login(String name, String password) {
+		adminRepository.findByNameAndPassword(name, password)
+				.orElseThrow(() -> new NotFoundAdminException(name));
 	}
 }
