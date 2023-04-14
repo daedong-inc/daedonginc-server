@@ -19,4 +19,8 @@ public class SessionUtil {
 	public static void setLoginAdminId(HttpSession httpSession, String loginAdminId) {
 		httpSession.setAttribute(LOGIN_ADMIN_ID, loginAdminId);
 	}
+
+	public static void removeLoginAdminId(HttpSession httpSession) {
+		httpSession.invalidate();
+	}
 }
