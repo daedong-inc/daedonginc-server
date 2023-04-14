@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "admin")
-@Where(clause = "deleted is false")
+@Where(clause = "deleted = false")
 @SQLDelete(sql = "update admin set deleted = true where id = ?")
 public class AdminEntity extends BaseEntity {
 	@Id
