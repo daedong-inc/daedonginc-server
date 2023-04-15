@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:insert="~{/fragments/header::fragment-header}"/>
+</head>
+
+<body>
+<div class="wrapper">
+    <div th:insert="~{/fragments/menu::fragment-menu(active='products')}"></div>
+
+    <div class="main">
+        <div th:insert="~{/fragments/nav::fragment-nav}"></div>
+
+        <main class="content">
+            <div class="container-fluid p-0">
+
+                <h1 class="h3 mb-3">Blank Page</h1>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Empty card</h5>
+                            </div>
+                            <div class="card-body">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer th:insert="~{/fragments/footer::fragment-footer}"></footer>
+    </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
