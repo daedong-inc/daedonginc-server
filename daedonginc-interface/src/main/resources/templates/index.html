@@ -510,6 +510,21 @@
         });
     });
 </script>
+<script>
+    $(function () {
+        $.ajax({
+            type: 'GET',
+            url: '/api/v1/admin/check'
+        }).done(function (data) {
+            if (data == false) {
+                alert('로그인이 필요합니다.');
+                location.href = '/admin/login';
+            }
+        }).fail(function (error) {
+            alert('서버에 오류가 발생했습니다.');
+        });
+    });
+</script>
 
 </body>
 
