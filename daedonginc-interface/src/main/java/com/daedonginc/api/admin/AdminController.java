@@ -1,5 +1,6 @@
 package com.daedonginc.api.admin;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +31,6 @@ public class AdminController {
 			HttpSession session,
 			@RequestBody final LoginAdminRequestDto dto
 	) {
-		System.out.println(dto.name());
-		System.out.println(SHA256Util.encrypt(dto.name()));
 		queryAdminLoginUseCase.query(
 				new QueryAdminLoginUseCase.Query(dto.name(), SHA256Util.encrypt(dto.password()))
 		);
@@ -42,5 +41,10 @@ public class AdminController {
 	@PostMapping("/logout")
 	public void logout(HttpSession session) {
 		SessionUtil.removeLoginAdminId(session);
+	}
+
+	@GetMapping("/check")
+	public boolean check(HttpSession session) {
+		return SessionUtil.getLoginAdminId(session) != null;
 	}
 }
