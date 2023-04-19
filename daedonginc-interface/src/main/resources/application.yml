@@ -3,4 +3,4 @@ spring:
     group:
       test: test
       local: local
-      dev: dev, persistence-database
+      dev: dev, persistence-database, s3
