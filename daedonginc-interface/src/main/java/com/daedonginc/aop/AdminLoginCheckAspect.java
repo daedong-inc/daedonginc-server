@@ -1,5 +1,6 @@
 package com.daedonginc.aop;
 
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ import jakarta.servlet.http.HttpSession;
 public class AdminLoginCheckAspect {
 
 	@Around("@annotation(AdminLoginCheck)")
-	public void around() throws RuntimeException {
+	public void around(ProceedingJoinPoint pjp) throws Throwable {
 		HttpSession session = ((ServletRequestAttributes)(RequestContextHolder.currentRequestAttributes())).getRequest()
 				.getSession();
 		String adminId = SessionUtil.getLoginAdminId(session);
@@ -28,5 +29,6 @@ public class AdminLoginCheckAspect {
 		if (adminId == null) {
 			throw new AdminUnauthorizedException();
 		}
+		pjp.proceed();
 	}
 }
