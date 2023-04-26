@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.daedonginc.category.domain.Category;
-import com.daedonginc.category.usecase.QueryCategoryAllByParentIdUseCase;
+import com.daedonginc.category.usecase.QueryCategoryByIdUseCase;
 import com.daedonginc.service.category.CategoryQuery;
 
 /**
@@ -16,10 +16,10 @@ import com.daedonginc.service.category.CategoryQuery;
  */
 @Service
 @Transactional(readOnly = true)
-public class QueryCategoryAllByParentId implements QueryCategoryAllByParentIdUseCase {
+public class QueryCategoryById implements QueryCategoryByIdUseCase {
 	private final CategoryQuery categoryQuery;
 
-	public QueryCategoryAllByParentId(final CategoryQuery categoryQuery) {
+	public QueryCategoryById(final CategoryQuery categoryQuery) {
 		this.categoryQuery = categoryQuery;
 	}
 
