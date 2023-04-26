@@ -21,6 +21,8 @@ import com.daedonginc.product.domain.Product;
 import com.daedonginc.product.usecase.CommandCreateProductUseCase;
 import com.daedonginc.product.usecase.CommandDeleteProductUseCase;
 import com.daedonginc.product.usecase.CommandUpdateProductUseCase;
+import com.daedonginc.product.usecase.QueryProductAllByChildIdUseCase;
+import com.daedonginc.product.usecase.QueryProductAllByParentIdUseCase;
 import com.daedonginc.product.usecase.QueryProductAllUseCase;
 import com.daedonginc.product.usecase.QueryProductByIdUseCase;
 
@@ -32,6 +34,8 @@ import com.daedonginc.product.usecase.QueryProductByIdUseCase;
 @RequestMapping("/api/v1/product")
 public class ProductController {
 	private final QueryProductAllUseCase queryProductAllUseCase;
+	private final QueryProductAllByParentIdUseCase queryProductAllByParentIdUseCase;
+	private final QueryProductAllByChildIdUseCase queryProductAllByChildIdUseCase;
 	private final QueryProductByIdUseCase queryProductByIdUseCase;
 	private final CommandCreateProductUseCase commandCreateProductUseCase;
 	private final CommandUpdateProductUseCase commandUpdateProductUseCase;
@@ -39,12 +43,16 @@ public class ProductController {
 
 	public ProductController(
 			final QueryProductAllUseCase queryProductAllUseCase,
+			final QueryProductAllByParentIdUseCase queryProductAllByParentIdUseCase,
+			final QueryProductAllByChildIdUseCase queryProductAllByChildIdUseCase,
 			final QueryProductByIdUseCase queryProductByIdUseCase,
 			final CommandCreateProductUseCase commandCreateProductUseCase,
 			final CommandUpdateProductUseCase commandUpdateProductUseCase,
 			final CommandDeleteProductUseCase commandDeleteProductUseCase
 	) {
 		this.queryProductAllUseCase = queryProductAllUseCase;
+		this.queryProductAllByParentIdUseCase = queryProductAllByParentIdUseCase;
+		this.queryProductAllByChildIdUseCase = queryProductAllByChildIdUseCase;
 		this.queryProductByIdUseCase = queryProductByIdUseCase;
 		this.commandCreateProductUseCase = commandCreateProductUseCase;
 		this.commandUpdateProductUseCase = commandUpdateProductUseCase;
@@ -55,6 +63,26 @@ public class ProductController {
 	public Page<ProductResponseDto> productAll(Pageable pageable) {
 		return queryProductAllUseCase.query(
 				new QueryProductAllUseCase.Query(pageable.getPageNumber(), pageable.getPageSize())
+		).map(ProductMapper::toResponseDto);
+	}
+
+	@GetMapping("/parent/{parentId}")
+	public Page<ProductResponseDto> productAllByParentCategoryId(
+			Pageable pageable,
+			@PathVariable Long parentId
+	) {
+		return queryProductAllByParentIdUseCase.query(
+				new QueryProductAllByParentIdUseCase.Query(pageable.getPageNumber(), pageable.getPageSize(), parentId)
+		).map(ProductMapper::toResponseDto);
+	}
+
+	@GetMapping("/child/{childId}")
+	public Page<ProductResponseDto> productAllByChildCategoryId(
+			Pageable pageable,
+			@PathVariable Long childId
+	) {
+		return queryProductAllByChildIdUseCase.query(
+				new QueryProductAllByChildIdUseCase.Query(pageable.getPageNumber(), pageable.getPageSize(), childId)
 		).map(ProductMapper::toResponseDto);
 	}
 
