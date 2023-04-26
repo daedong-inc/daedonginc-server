@@ -1,8 +1,5 @@
 package com.daedonginc.category.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +21,7 @@ public class QueryCategoryById implements QueryCategoryByIdUseCase {
 	}
 
 	@Override
-	public List<Category> query(Query query) {
-		return categoryQuery.findAllByParentId(query.ParentCategoryId()).stream()
-				.map(categoryEntity -> Category.from(categoryEntity))
-				.collect(Collectors.toList());
+	public Category query(Query query) {
+		return Category.from(categoryQuery.findById(query.ParentCategoryId()));
 	}
 }

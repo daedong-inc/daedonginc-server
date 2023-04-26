@@ -22,8 +22,8 @@ import com.daedonginc.category.domain.Category;
 import com.daedonginc.category.usecase.CommandCreateCategoryUseCase;
 import com.daedonginc.category.usecase.CommandDeleteCategoryUseCase;
 import com.daedonginc.category.usecase.CommandUpdateCategoryUseCase;
-import com.daedonginc.category.usecase.QueryCategoryAllByParentIdUseCase;
 import com.daedonginc.category.usecase.QueryCategoryAllUseCase;
+import com.daedonginc.category.usecase.QueryCategoryByIdUseCase;
 
 /**
  * @author domo
@@ -32,20 +32,20 @@ import com.daedonginc.category.usecase.QueryCategoryAllUseCase;
 @RestController
 @RequestMapping("/api/v1/category")
 public class CategoryController {
-	private final QueryCategoryAllByParentIdUseCase queryCategoryAllByParentIdUseCase;
+	private final QueryCategoryByIdUseCase queryCategoryByIdUseCase;
 	private final QueryCategoryAllUseCase queryCategoryAllUseCase;
 	private final CommandCreateCategoryUseCase commandCreateCategoryUseCase;
 	private final CommandUpdateCategoryUseCase commandUpdateCategoryUseCase;
 	private final CommandDeleteCategoryUseCase commandDeleteCategoryUseCase;
 
 	public CategoryController(
-			final QueryCategoryAllByParentIdUseCase queryCategoryAllByParentIdUseCase,
+			final QueryCategoryByIdUseCase queryCategoryByIdUseCase,
 			final QueryCategoryAllUseCase queryCategoryAllUseCase,
 			final CommandCreateCategoryUseCase commandCreateCategoryUseCase,
 			final CommandUpdateCategoryUseCase commandUpdateCategoryUseCase,
 			final CommandDeleteCategoryUseCase commandDeleteCategoryUseCase
 	) {
-		this.queryCategoryAllByParentIdUseCase = queryCategoryAllByParentIdUseCase;
+		this.queryCategoryByIdUseCase = queryCategoryByIdUseCase;
 		this.queryCategoryAllUseCase = queryCategoryAllUseCase;
 		this.commandCreateCategoryUseCase = commandCreateCategoryUseCase;
 		this.commandUpdateCategoryUseCase = commandUpdateCategoryUseCase;
@@ -59,12 +59,12 @@ public class CategoryController {
 				.collect(Collectors.toList());
 	}
 
-	@GetMapping("/{parentId}")
-	public List<CategoryResponseDto> categoryAllByParentId(@PathVariable final Long parentId) {
-		return queryCategoryAllByParentIdUseCase.query(
-						new QueryCategoryAllByParentIdUseCase.Query(parentId)).stream()
-				.map(CategoryMapper::toResponseDto)
-				.collect(Collectors.toList());
+	@GetMapping("/{categoryId}")
+	public CategoryResponseDto categoryById(@PathVariable final Long categoryId) {
+		Category category = queryCategoryByIdUseCase.query(
+				new QueryCategoryByIdUseCase.Query(categoryId)
+		);
+		return CategoryMapper.toResponseDto(category);
 	}
 
 	@AdminLoginCheck
