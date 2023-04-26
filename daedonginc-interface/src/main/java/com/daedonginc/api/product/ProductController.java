@@ -131,7 +131,8 @@ public class ProductController {
 						dto.size(),
 						dto.partMaterial(),
 						dto.description(),
-						dto.imageUrl()
+						dto.imageUrl(),
+						dto.isHidden()
 				)
 		);
 	}

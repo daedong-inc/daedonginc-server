@@ -17,7 +17,8 @@ public class ProductMapper {
 				product.size(),
 				product.partMaterial(),
 				product.description(),
-				product.imageUrl()
+				product.imageUrl(),
+				product.isHidden()
 		);
 	}
 }

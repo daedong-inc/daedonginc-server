@@ -1,5 +1,7 @@
 package com.daedonginc.entity.product;
 
+import java.util.Optional;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -43,6 +45,8 @@ public class ProductEntity extends BaseEntity {
 
 	private String imageUrl;
 
+	private boolean isHidden = false;
+
 	protected ProductEntity() {
 	}
 
@@ -64,20 +68,22 @@ public class ProductEntity extends BaseEntity {
 
 	public void update(
 			final CategoryEntity categoryEntity,
-			final String name,
-			final int volume,
-			final String size,
-			final String partMaterial,
-			final String description,
-			final String imageUrl
+			final Optional<String> name,
+			final Optional<Integer> volume,
+			final Optional<String> size,
+			final Optional<String> partMaterial,
+			final Optional<String> description,
+			final Optional<String> imageUrl,
+			final Optional<Boolean> isHidden
 	) {
 		this.category = categoryEntity;
-		this.name = name;
-		this.volume = volume;
-		this.size = size;
-		this.partMaterial = partMaterial;
-		this.description = description;
-		this.imageUrl = imageUrl;
+		this.name = name.orElseGet(this::getName);
+		this.volume = volume.orElseGet(this::getVolume);
+		this.size = size.orElseGet(this::getSize);
+		this.partMaterial = partMaterial.orElseGet(this::getPartMaterial);
+		this.description = description.orElseGet(this::getDescription);
+		this.imageUrl = imageUrl.orElseGet(this::getImageUrl);
+		this.isHidden = isHidden.orElseGet(this::isHidden);
 	}
 
 	public Long getId() {
@@ -112,4 +118,7 @@ public class ProductEntity extends BaseEntity {
 		return imageUrl;
 	}
 
+	public boolean isHidden() {
+		return isHidden;
+	}
 }
