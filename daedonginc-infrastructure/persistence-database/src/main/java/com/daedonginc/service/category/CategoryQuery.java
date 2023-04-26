@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.daedonginc.entity.category.CategoryEntity;
 import com.daedonginc.repository.category.CategoryRepository;
 import com.daedonginc.service.category.exception.NotFoundCategoryException;
-import com.daedonginc.service.category.exception.NotFoundParentCategoryException;
 
 /**
  * @author domo
@@ -32,9 +31,4 @@ public class CategoryQuery {
 		return categoryRepository.findAllByParentIsNull();
 	}
 
-	public List<CategoryEntity> findAllByParentId(final Long parentId) {
-		categoryRepository.findById(parentId)
-				.orElseThrow(() -> new NotFoundParentCategoryException(parentId));
-		return categoryRepository.findAllByParentId(parentId);
-	}
 }

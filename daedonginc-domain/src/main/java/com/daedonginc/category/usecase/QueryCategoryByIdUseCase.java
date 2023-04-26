@@ -1,7 +1,5 @@
 package com.daedonginc.category.usecase;
 
-import java.util.List;
-
 import com.daedonginc.category.domain.Category;
 
 /**
@@ -9,7 +7,7 @@ import com.daedonginc.category.domain.Category;
  * Created on 2023/04/03
  */
 public interface QueryCategoryByIdUseCase {
-	List<Category> query(Query query);
+	Category query(Query query);
 
 	record Query(
 			Long ParentCategoryId
