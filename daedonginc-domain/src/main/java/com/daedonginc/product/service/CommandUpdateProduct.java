@@ -8,7 +8,6 @@ import com.daedonginc.model.category.CategoryLevel;
 import com.daedonginc.product.exception.CategoryLevelIsNotSuitableException;
 import com.daedonginc.product.usecase.CommandUpdateProductUseCase;
 import com.daedonginc.service.category.CategoryQuery;
-import com.daedonginc.service.product.ProductCommand;
 import com.daedonginc.service.product.ProductQuery;
 
 /**
@@ -18,16 +17,13 @@ import com.daedonginc.service.product.ProductQuery;
 @Service
 @Transactional
 public class CommandUpdateProduct implements CommandUpdateProductUseCase {
-	private final ProductCommand productCommand;
 	private final ProductQuery productQuery;
 	private final CategoryQuery categoryQuery;
 
 	public CommandUpdateProduct(
-			final ProductCommand productCommand,
 			final ProductQuery productQuery,
 			final CategoryQuery categoryQuery
 	) {
-		this.productCommand = productCommand;
 		this.productQuery = productQuery;
 		this.categoryQuery = categoryQuery;
 	}
@@ -39,14 +35,17 @@ public class CommandUpdateProduct implements CommandUpdateProductUseCase {
 		if (categoryEntity.getCategoryLevel() != CategoryLevel.MIDDLE) {
 			throw new CategoryLevelIsNotSuitableException("하위 카테고리만 등록 가능합니다.");
 		}
-		
-		productQuery.findById(command.productId()).update(
-				categoryEntity,
-				command.name(),
-				command.volume(),
-				command.size(),
-				command.partMaterial(),
-				command.description(),
-				command.imageUrl());
+
+		productQuery.findById(command.productId())
+				.update(
+						categoryEntity,
+						command.name(),
+						command.volume(),
+						command.size(),
+						command.partMaterial(),
+						command.description(),
+						command.imageUrl(),
+						command.isHidden()
+				);
 	}
 }

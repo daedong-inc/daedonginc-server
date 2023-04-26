@@ -14,6 +14,7 @@ public record ProductResponseDto(
 		String size,
 		String partMaterial,
 		String description,
-		String imageUrl
+		String imageUrl,
+		boolean isHidden
 ) {
 }

@@ -18,7 +18,8 @@ public record Product(
 		String size,
 		String partMaterial,
 		String description,
-		String imageUrl
+		String imageUrl,
+		boolean isHidden
 ) {
 	public static Product from(ProductEntity productEntity) {
 		return new Product(
@@ -40,7 +41,8 @@ public record Product(
 				productEntity.getSize(),
 				productEntity.getPartMaterial(),
 				productEntity.getDescription(),
-				productEntity.getImageUrl()
+				productEntity.getImageUrl(),
+				productEntity.isHidden()
 		);
 	}
 }
