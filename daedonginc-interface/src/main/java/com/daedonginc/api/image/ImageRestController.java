@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.daedonginc.api.image.dto.ImageResponseDto;
 import com.daedonginc.model.image.ImageCategory;
 
 /**
@@ -38,17 +39,24 @@ public class ImageRestController {
 	}
 
 	@PostMapping(value = "/{imageCategory}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public String uploadImage(
+	public ImageResponseDto uploadImage(
 			@PathVariable ImageCategory imageCategory,
 			@RequestParam MultipartFile image
 	) throws IOException {
 		final var imageFile = convert(image)
 				.orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
-		return upload(imageFile, imageCategory);
+
+		String uuid = UUID.randomUUID().toString();
+		
+		return new ImageResponseDto(
+				upload(imageFile, imageCategory, uuid),
+				imageCategory,
+				uuid
+		);
 	}
 
-	private String upload(File uploadFile, ImageCategory imageCategory) {
-		final var fileName = String.format("images/%s/%s3", imageCategory.name(), UUID.randomUUID());
+	private String upload(File uploadFile, ImageCategory imageCategory, String uuid) {
+		final var fileName = String.format("images/%s/%s3", imageCategory.name(), uuid);
 
 		amazonS3.putObject(
 				new PutObjectRequest(bucket, fileName, uploadFile)
