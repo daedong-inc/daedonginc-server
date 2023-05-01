@@ -1,0 +1,13 @@
+dependencies {
+    implementation project(':commons:common-model')
+    implementation project(':daedonginc-infrastructure:persistence-database')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+}
+
+bootJar {
+    enabled(false)
+}
+jar {
+    enabled(true)
+}

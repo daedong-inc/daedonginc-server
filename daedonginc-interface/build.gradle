@@ -1,0 +1,17 @@
+dependencies {
+    implementation project(':daedonginc-domain')
+    implementation project(':commons:common-model')
+    implementation project(':commons:common-util')
+    implementation project(':daedonginc-infrastructure')
+    implementation project(':daedonginc-infrastructure:persistence-database')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.data:spring-data-commons'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+}
+
+jar {
+    enabled = false
+}

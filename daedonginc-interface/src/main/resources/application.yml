@@ -1,0 +1,7 @@
+spring:
+  profiles:
+    group:
+      test: test
+      local: local
+      dev: dev, persistence-database, s3
+      prod: prod, persistence-database, s3

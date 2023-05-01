@@ -1,1 +1,8 @@
 rootProject.name = 'daedonginc-server'
+include 'daedonginc-interface'
+include 'daedonginc-infrastructure'
+include 'daedonginc-infrastructure:persistence-database'
+include 'daedonginc-domain'
+include 'commons'
+include 'commons:common-model'
+include 'commons:common-util'
