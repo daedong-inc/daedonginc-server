@@ -22,15 +22,21 @@ dependencies {
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 }
 
-def querydslDir = "$buildDir/generated/querydsl"
+def generatedDir = "$buildDir/generated"
 
 querydsl {
     jpa = true
-    querydslSourcesDir = querydslDir
+    querydslSourcesDir = "$generatedDir/querydsl"
 }
+
 sourceSets {
-    main.java.srcDir querydslDir
+    main {
+        java {
+            srcDirs += [generatedDir]
+        }
+    }
 }
+
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
@@ -46,4 +52,25 @@ bootJar {
 }
 jar {
     enabled(true)
+}
+
+tasks.jar {
+    // jar task의 의존성을 수정합니다.
+    // 이제 jar task는 더 이상 compileJava task에 의존하지 않습니다.
+    // 대신, classes task가 완료된 후에만 실행됩니다.
+    dependsOn = ['classes']
+}
+
+tasks.classes {
+    // classes task의 의존성을 수정합니다.
+    // 이제 classes task는 더 이상 compileQuerydsl task에 의존하지 않습니다.
+    // 대신, compileQuerydsl task가 완료된 후에만 실행됩니다.
+    dependsOn = []
+}
+
+tasks.compileJava {
+    // compileJava task의 의존성을 수정합니다.
+    // 이제 compileJava task는 더 이상 compileQuerydsl task에 의존하지 않습니다.
+    // 대신, compileQuerydsl task가 완료된 후에만 실행됩니다.
+    dependsOn = []
 }
