@@ -1,5 +1,7 @@
 package com.daedonginc.api.product;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -23,8 +25,8 @@ import com.daedonginc.product.usecase.CommandDeleteProductUseCase;
 import com.daedonginc.product.usecase.CommandUpdateProductUseCase;
 import com.daedonginc.product.usecase.QueryProductAllByChildIdUseCase;
 import com.daedonginc.product.usecase.QueryProductAllByParentIdUseCase;
-import com.daedonginc.product.usecase.QueryProductAllUseCase;
 import com.daedonginc.product.usecase.QueryProductByIdUseCase;
+import com.daedonginc.product.usecase.QueryProductSearchUseCase;
 
 /**
  * @author domo
@@ -33,7 +35,7 @@ import com.daedonginc.product.usecase.QueryProductByIdUseCase;
 @RestController
 @RequestMapping("/api/v1/product")
 public class ProductController {
-	private final QueryProductAllUseCase queryProductAllUseCase;
+	private final QueryProductSearchUseCase queryProductSearchUseCase;
 	private final QueryProductAllByParentIdUseCase queryProductAllByParentIdUseCase;
 	private final QueryProductAllByChildIdUseCase queryProductAllByChildIdUseCase;
 	private final QueryProductByIdUseCase queryProductByIdUseCase;
@@ -42,7 +44,7 @@ public class ProductController {
 	private final CommandDeleteProductUseCase commandDeleteProductUseCase;
 
 	public ProductController(
-			final QueryProductAllUseCase queryProductAllUseCase,
+			final QueryProductSearchUseCase queryProductSearchUseCase,
 			final QueryProductAllByParentIdUseCase queryProductAllByParentIdUseCase,
 			final QueryProductAllByChildIdUseCase queryProductAllByChildIdUseCase,
 			final QueryProductByIdUseCase queryProductByIdUseCase,
@@ -50,7 +52,7 @@ public class ProductController {
 			final CommandUpdateProductUseCase commandUpdateProductUseCase,
 			final CommandDeleteProductUseCase commandDeleteProductUseCase
 	) {
-		this.queryProductAllUseCase = queryProductAllUseCase;
+		this.queryProductSearchUseCase = queryProductSearchUseCase;
 		this.queryProductAllByParentIdUseCase = queryProductAllByParentIdUseCase;
 		this.queryProductAllByChildIdUseCase = queryProductAllByChildIdUseCase;
 		this.queryProductByIdUseCase = queryProductByIdUseCase;
@@ -60,10 +62,22 @@ public class ProductController {
 	}
 
 	@GetMapping
-	public Page<ProductResponseDto> productAll(Pageable pageable) {
-		return queryProductAllUseCase.query(
-				new QueryProductAllUseCase.Query(pageable.getPageNumber(), pageable.getPageSize())
-		).map(ProductMapper::toResponseDto);
+	public Page<ProductResponseDto> searchProducts(
+			Pageable pageable,
+			String keyword,
+			Long parentId,
+			Optional<Long> childId,
+			boolean isHidden
+	) {
+		return queryProductSearchUseCase.query(
+				new QueryProductSearchUseCase.Query(
+						pageable.getPageNumber(),
+						pageable.getPageSize(),
+						keyword,
+						parentId,
+						childId,
+						isHidden
+				)).map(ProductMapper::toResponseDto);
 	}
 
 	@GetMapping("/parent/{parentId}")

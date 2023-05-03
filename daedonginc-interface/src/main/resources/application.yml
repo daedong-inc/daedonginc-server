@@ -2,6 +2,6 @@ spring:
   profiles:
     group:
       test: test
-      local: local
+      local: local, s3
       dev: dev, persistence-database, s3
       prod: prod, persistence-database, s3

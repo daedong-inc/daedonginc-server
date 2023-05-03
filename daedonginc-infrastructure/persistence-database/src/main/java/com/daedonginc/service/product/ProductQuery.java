@@ -1,5 +1,7 @@
 package com.daedonginc.service.product;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -79,5 +81,18 @@ public class ProductQuery {
 				.orElseThrow(() -> new NotFoundCategoryException(childId));
 
 		return productRepository.countByCategory(category);
+	}
+
+	public Page<ProductEntity> search(
+			final Pageable pageable,
+			String keyword,
+			Long parentId,
+			Optional<Long> childId,
+			boolean hidden
+	) {
+		categoryRepository.findById(parentId)
+				.orElseThrow(() -> new NotFoundCategoryException(parentId));
+
+		return productRepository.searchProducts(pageable, keyword, parentId, childId, hidden);
 	}
 }
