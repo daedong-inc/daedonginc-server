@@ -13,7 +13,7 @@ import com.daedonginc.entity.product.ProductEntity;
  * @author domo
  * Created on 2023/03/25
  */
-public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long>, ProductRepository {
+public interface ProductJpaRepository extends JpaRepository<ProductEntity, Long> {
 	long count();
 
 	Page<ProductEntity> findAllByCategoryIn(Pageable pageable, List<CategoryEntity> categories);
