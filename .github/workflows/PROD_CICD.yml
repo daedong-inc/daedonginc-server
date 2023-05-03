@@ -6,85 +6,84 @@ on:
     branches:
       - master
 jobs:
-  production:
-    name: Production-deploy
+  build:
+    name: Build
+    runs-on: ubuntu-latest
     environment: PRODUCTION
-    build:
-      runs-on: ubuntu-latest
-      env:
-        SPRING_PROFILES_ACTIVE: prod
-        DATASOURCE_HOST: ${{ secrets.DATASOURCE_HOST }}
-        DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
-        DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
-        DATASOURCE_PORT: ${{ secrets.DATASOURCE_PORT }}
-        S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
-        S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
-        S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+    env:
+      SPRING_PROFILES_ACTIVE: prod
+      DATASOURCE_HOST: ${{ secrets.DATASOURCE_HOST }}
+      DATASOURCE_USERNAME: ${{ secrets.DATASOURCE_USERNAME }}
+      DATASOURCE_PASSWORD: ${{ secrets.DATASOURCE_PASSWORD }}
+      DATASOURCE_PORT: ${{ secrets.DATASOURCE_PORT }}
+      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+      S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
 
-      steps:
-        - name: CheckOut
-        - uses: actions/checkout@v3
+    steps:
+      - name: CheckOut
+        uses: actions/checkout@v3
 
-        - name: Set up Java
-          uses: actions/setup-java@v3
-          with:
-            java-version: 17
-            distribution: 'corretto'
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'corretto'
 
-        - name: clean [persistence-database]
-          run: ./gradlew daedonginc-infrastructure:persistence-database:clean
+      - name: clean [persistence-database]
+        run: ./gradlew daedonginc-infrastructure:persistence-database:clean
 
-        - name: clean and build [interface]
-          run: ./gradlew clean daedonginc-interface:build
+      - name: clean and build [interface]
+        run: ./gradlew clean daedonginc-interface:build
 
-        - name: Login to Docker Hub
-          uses: docker/login-action@v2
-          with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        - name: Read version from build.gradle
-          run: echo "::set-output name=version::$(./gradlew -q printVersion)"
-          id: read-version
+      - name: Build Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/daedonginc-server
 
-        - name: Build Docker image
-          uses: docker/build-push-action@v3
-          with:
-            context: .
-            push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/daedonginc-server:${{ steps.read-version.outputs.version }}
+  deploy:
+    needs: build
+    name: deploy
+    runs-on: [ AWS_EC2_PROD_SERVER ]
+    environment: PRODUCTION
+    steps:
+      - name: test
+        run: |
+          cd /home/ec2-user
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/daedonginc-server
+          docker stop daedonginc-server && docker rm daedonginc-server
+          docker run -d -p 80:8080 --name daedonginc-server --env-file /home/ec2-user/env.list ${{ secrets.DOCKERHUB_USERNAME }}/daedonginc-server
 
-    deploy:
-      needs: build
-      runs-on: [ AWS_EC2_PROD_SERVER ]
-      steps:
-        - name: test
-          run: |
-            cd /home/ec2-user/
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/daedonginc-server:${{ steps.read-version.outputs.version }}
-            docker stop daedonginc-server
-            docker rm daedonginc-server
-            docker run -d -p 80:8080 --name daedonginc-server --env-file ~/env.list ${{ secrets.DOCKERHUB_USERNAME }}/daedonginc-server:${{ steps.read-version.outputs.version }}
-
-    notification:
-      needs: deploy
-      runs-on: ubuntu-latest
-      steps:
-        - name: Notify on success
-          if: ${{ success() }}
-          uses: rtCamp/action-slack-notify@v2
-          env:
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-            SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-            SLACK_COLOR: 'good'
-            SLACK_TITLE: 상용 서버 Build succeeded 🎉
-            SLACK_MESSAGE: "*CommitMessage* \n ${{ join(github.event.commits.*.message, '\n') }}"
-        - name: Notify on failure
-          if: ${{ failure() }}
-          uses: rtCamp/action-slack-notify@v2
-          env:
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-            SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
-            SLACK_COLOR: 'danger'
-            SLACK_TITLE: 상용 서버 Build failed 🥲
-            SLACK_MESSAGE: "*CommitMessage* \n ${{ join(github.event.commits.*.message, '\n') }}"
+  notification:
+    needs: deploy
+    name: notification
+    runs-on: ubuntu-latest
+    environment: PRODUCTION
+    steps:
+      - name: Notify on success
+        if: ${{ success() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_COLOR: 'good'
+          SLACK_TITLE: 상용 서버 Build succeeded 🎉
+          SLACK_MESSAGE: "*CommitMessage* \n ${{ join(github.event.commits.*.message, '\n') }}"
+      - name: Notify on failure
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_COLOR: 'danger'
+          SLACK_TITLE: 상용 서버 Build failed 🥲
+          SLACK_MESSAGE: "*CommitMessage* \n ${{ join(github.event.commits.*.message, '\n') }}"
