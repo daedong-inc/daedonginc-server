@@ -24,6 +24,9 @@ import com.daedonginc.news.usecase.CommandUpdateNewsUseCase;
 import com.daedonginc.news.usecase.QueryNewsAllByNewsTypeUseCase;
 import com.daedonginc.news.usecase.QueryNewsByIdAndNewsTypeUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
 /**
  * @author domo
  * Created on 2023/04/11
@@ -52,8 +55,9 @@ public class NewsController {
 	}
 
 	@GetMapping("/{newsType}")
+	@Operation(summary = "뉴스 리스트 조회", description = "뉴스 리스트 조회")
 	public Page<NewsResponseDto> newsAllByNewsType(
-			@PathVariable final NewsType newsType,
+			@Parameter(description = "뉴스 타입", required = true) @PathVariable final NewsType newsType,
 			Pageable pageable
 	) {
 		return queryNewsAllByNewsTypeUseCase.query(
@@ -62,9 +66,10 @@ public class NewsController {
 	}
 
 	@GetMapping("/{newsType}/{id}")
+	@Operation(summary = "뉴스 상세 조회", description = "뉴스 상세 조회")
 	public NewsResponseDto newsByIdAndNewsType(
-			@PathVariable final NewsType newsType,
-			@PathVariable final Long id
+			@Parameter(description = "뉴스 타입", required = true) @PathVariable final NewsType newsType,
+			@Parameter(description = "뉴스 아이디", required = true) @PathVariable final Long id
 	) {
 		return NewsMapper.toResponseDto(
 				queryNewsByIdAndNewsTypeUseCase.query(
@@ -75,6 +80,7 @@ public class NewsController {
 
 	@AdminLoginCheck
 	@PostMapping
+	@Operation(summary = "뉴스 생성", description = "뉴스 생성")
 	public NewsResponseDto createNews(
 			@RequestBody @Validated final CreateNewsRequestDto dto
 	) {
@@ -90,8 +96,9 @@ public class NewsController {
 
 	@AdminLoginCheck
 	@PutMapping("/{id}")
+	@Operation(summary = "뉴스 수정", description = "뉴스 수정")
 	public void updateNews(
-			@PathVariable final Long id,
+			@Parameter(description = "뉴스 아이디", required = true) @PathVariable final Long id,
 			@RequestBody @Validated final CreateNewsRequestDto dto
 	) {
 		commandUpdateNewsUseCase.command(
@@ -106,8 +113,9 @@ public class NewsController {
 
 	@AdminLoginCheck
 	@DeleteMapping("/{id}")
+	@Operation(summary = "뉴스 삭제", description = "뉴스 삭제")
 	public void deleteNews(
-			@PathVariable final Long id
+			@Parameter(description = "뉴스 아이디", required = true) @PathVariable final Long id
 	) {
 		commandDeleteNewsUseCase.command(new CommandDeleteNewsUseCase.Command(id));
 	}
