@@ -28,12 +28,17 @@ import com.daedonginc.product.usecase.QueryProductAllByParentIdUseCase;
 import com.daedonginc.product.usecase.QueryProductByIdUseCase;
 import com.daedonginc.product.usecase.QueryProductSearchUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * @author domo
  * Created on 2023/04/05
  */
 @RestController
 @RequestMapping("/api/v1/product")
+@Tag(name = "Product", description = "상품")
 public class ProductController {
 	private final QueryProductSearchUseCase queryProductSearchUseCase;
 	private final QueryProductAllByParentIdUseCase queryProductAllByParentIdUseCase;
@@ -62,17 +67,19 @@ public class ProductController {
 	}
 
 	@GetMapping
+	@Operation(summary = "상품 검색", description = "page, size, keyword, parentId, childId, isHidden 값들을 입력받아 검색합니다.")
 	public Page<ProductResponseDto> searchProducts(
-			Pageable pageable,
-			String keyword,
-			Long parentId,
-			Optional<Long> childId,
-			boolean isHidden
+			@Parameter(name = "page", description = "페이지 번호 *(0부터 시작)") int page,
+			@Parameter(name = "size", description = "사이즈") int size,
+			@Parameter(name = "keyword", description = "검색어") String keyword,
+			@Parameter(name = "parentId", description = "부모 카테고리 ID") Long parentId,
+			@Parameter(name = "childId", description = "자식 카테고리 ID") Optional<Long> childId,
+			@Parameter(name = "비공개 여부", description = "공개=false, 비공개=true") boolean isHidden
 	) {
 		return queryProductSearchUseCase.query(
 				new QueryProductSearchUseCase.Query(
-						pageable.getPageNumber(),
-						pageable.getPageSize(),
+						page,
+						size,
 						keyword,
 						parentId,
 						childId,
@@ -101,8 +108,9 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}")
+	@Operation(summary = "상품 상세 조회", description = "상품 ID를 받아 상세 정보를 검색합니다.")
 	public ProductResponseDto product(
-			@PathVariable("id") Long id
+			@Parameter(name = "id", description = "상품 ID") @PathVariable("id") Long id
 	) {
 		return ProductMapper.toResponseDto(
 				queryProductByIdUseCase.query(
@@ -113,8 +121,11 @@ public class ProductController {
 
 	@AdminLoginCheck
 	@PostMapping
+	@GetMapping("/{id}")
+	@Operation(summary = "상품 등록", description = "상품 정보를 입력받아 등록합니다.")
 	public ProductResponseDto createProduct(
-			@RequestBody @Validated final CreateProductRequestDto dto) {
+			@RequestBody @Validated final CreateProductRequestDto dto
+	) {
 		Product product = commandCreateProductUseCase.command(
 				new CommandCreateProductUseCase.Command(
 						dto.categoryId(),
@@ -132,8 +143,9 @@ public class ProductController {
 
 	@AdminLoginCheck
 	@PutMapping("/{id}")
+	@Operation(summary = "상품 수정", description = "상품 ID와 수정 할 상품의 내용만 받아 수정합니다.")
 	public void updateProduct(
-			@PathVariable final Long id,
+			@Parameter(name = "id", description = "상품 ID") @PathVariable("id") Long id,
 			@RequestBody @Validated final UpdateProductRequestDto dto
 	) {
 		commandUpdateProductUseCase.command(
@@ -153,8 +165,9 @@ public class ProductController {
 
 	@AdminLoginCheck
 	@DeleteMapping("/{id}")
+	@Operation(summary = "상품 삭제", description = "상품 ID를 받아 삭제합니다.")
 	public void deleteProduct(
-			@PathVariable final Long id
+			@Parameter(name = "id", description = "상품 ID") @PathVariable("id") Long id
 	) {
 		commandDeleteProductUseCase.command(
 				new CommandDeleteProductUseCase.Command(id)
