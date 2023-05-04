@@ -24,12 +24,17 @@ import com.daedonginc.popup.usecase.QueryPopupActiveAllUseCase;
 import com.daedonginc.popup.usecase.QueryPopupAllUseCase;
 import com.daedonginc.util.DateTimeUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * @author domo
  * Created on 2023/04/02
  */
 @RestController
 @RequestMapping("/api/v1/popup")
+@Tag(name = "popup", description = "팝업")
 public class PopupController {
 	private final QueryPopupAllUseCase queryPopupAllUseCase;
 	private final QueryPopupActiveAllUseCase queryPopupActiveAllUseCase;
@@ -53,6 +58,7 @@ public class PopupController {
 
 	@AdminLoginCheck
 	@GetMapping
+	@Operation(summary = "팝업 목록", description = "팝업 목록을 조회합니다.")
 	public List<PopupResponseDto> popupAll() {
 		return queryPopupAllUseCase.query().stream()
 				.map(PopupMapper::toResponseDto)
@@ -60,12 +66,14 @@ public class PopupController {
 	}
 
 	@GetMapping("/active")
+	@Operation(summary = "활성화된 팝업 목록", description = "활성화된 팝업 목록을 조회합니다.")
 	public List<Popup> popupActiveAll() {
 		return queryPopupActiveAllUseCase.query();
 	}
 
 	@AdminLoginCheck
 	@PostMapping
+	@Operation(summary = "팝업 생성", description = "팝업을 생성합니다.")
 	public PopupResponseDto createPopup(
 			@RequestBody @Validated final CreatePopupRequestDto dto
 	) {
@@ -83,8 +91,9 @@ public class PopupController {
 
 	@AdminLoginCheck
 	@PutMapping("{id}")
+	@Operation(summary = "팝업 수정", description = "팝업을 수정합니다.")
 	public void updatePopup(
-			@PathVariable final Long id,
+			@Parameter(description = "팝업 ID", required = true) @PathVariable final Long id,
 			@RequestBody @Validated final CreatePopupRequestDto dto
 	) {
 		commandUpdatePopupUseCase.command(new CommandUpdatePopupUseCase.Command(
@@ -100,7 +109,10 @@ public class PopupController {
 
 	@AdminLoginCheck
 	@DeleteMapping("{id}")
-	public void deletePopup(@PathVariable final Long id) {
+	@Operation(summary = "팝업 삭제", description = "팝업을 삭제합니다.")
+	public void deletePopup(
+			@Parameter(description = "팝업 ID", required = true) @PathVariable final Long id
+	) {
 		commandDeletePopupUseCase.command(new CommandDeletePopupUseCase.Command(id));
 	}
 }
