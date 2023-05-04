@@ -11,6 +11,8 @@ import com.daedonginc.api.admin.dto.LoginAdminRequestDto;
 import com.daedonginc.util.SHA256Util;
 import com.daedonginc.util.SessionUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 
 /**
@@ -19,6 +21,7 @@ import jakarta.servlet.http.HttpSession;
  */
 @RestController
 @RequestMapping("api/v1/admin")
+@Tag(name = "admin", description = "관리자")
 public class AdminController {
 	private final QueryAdminLoginUseCase queryAdminLoginUseCase;
 
@@ -27,6 +30,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/login")
+	@Operation(summary = "관리자 로그인", description = "name, password를 받아 로그인을 진행합니다.")
 	public void login(
 			HttpSession session,
 			@RequestBody final LoginAdminRequestDto dto
@@ -39,11 +43,13 @@ public class AdminController {
 	}
 
 	@PostMapping("/logout")
+	@Operation(summary = "관리자 로그아웃", description = "로그아웃을 진행합니다.")
 	public void logout(HttpSession session) {
 		SessionUtil.removeLoginAdminId(session);
 	}
 
 	@GetMapping("/check")
+	@Operation(summary = "관리자 로그인 체크", description = "관리자 로그인 여부를 확인합니다.")
 	public boolean check(HttpSession session) {
 		return SessionUtil.getLoginAdminId(session) != null;
 	}
