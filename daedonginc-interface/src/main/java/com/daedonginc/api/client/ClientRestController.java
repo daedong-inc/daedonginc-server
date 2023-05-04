@@ -23,12 +23,17 @@ import com.daedonginc.client.usecase.CommandDeleteClientUseCase;
 import com.daedonginc.client.usecase.CommandUpdateClientUseCase;
 import com.daedonginc.client.usecase.QueryClientAllUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * @author domo
  * Created on 2023/03/31
  */
 @RestController
 @RequestMapping("/api/v1/client")
+@Tag(name = "Client", description = "고객사")
 public class ClientRestController {
 	private final QueryClientAllUseCase queryClientAllUseCase;
 	private final CommandCreateClientUseCase commandCreateClientUseCase;
@@ -48,6 +53,7 @@ public class ClientRestController {
 	}
 
 	@GetMapping
+	@Operation(summary = "고객사 전체 조회", description = "고객사를 전체 조회합니다")
 	public Page<ClientResponseDto> clientAll(Pageable pageable) {
 		return queryClientAllUseCase.query(
 				new QueryClientAllUseCase.Query(pageable.getPageNumber(), pageable.getPageSize())
@@ -56,6 +62,7 @@ public class ClientRestController {
 
 	@AdminLoginCheck
 	@PostMapping
+	@Operation(summary = "고객사 생성", description = "고객사를 생성합니다")
 	public ClientResponseDto createClient(
 			@RequestBody @Validated final CreateClientRequestDto dto
 	) {
@@ -71,8 +78,9 @@ public class ClientRestController {
 
 	@AdminLoginCheck
 	@PutMapping("{id}")
+	@Operation(summary = "고객사 수정", description = "고객사를 수정합니다")
 	public void updateClient(
-			@PathVariable final Long id,
+			@Parameter(description = "고객사 ID", required = true) @PathVariable final Long id,
 			@RequestBody @Validated final UpdateClientRequestDto dto
 	) {
 		commandUpdateClientUseCase.command(
@@ -87,7 +95,10 @@ public class ClientRestController {
 
 	@AdminLoginCheck
 	@DeleteMapping("{id}")
-	public void deleteClient(@PathVariable final Long id) {
+	@Operation(summary = "고객사 삭제", description = "고객사를 삭제합니다")
+	public void deleteClient(
+			@Parameter(description = "고객사 ID", required = true) @PathVariable final Long id
+	) {
 		commandDeleteClientUseCase.command(new CommandDeleteClientUseCase.Command(id));
 	}
 }
