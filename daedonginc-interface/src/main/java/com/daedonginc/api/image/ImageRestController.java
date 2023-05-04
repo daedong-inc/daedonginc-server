@@ -22,12 +22,17 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.daedonginc.api.image.dto.ImageResponseDto;
 import com.daedonginc.model.image.ImageCategory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * @author domo
  * Created on 2023/04/19
  */
 @RestController
 @RequestMapping("/api/v1/image")
+@Tag(name = "Image", description = "이미지")
 public class ImageRestController {
 	private final AmazonS3 amazonS3;
 
@@ -39,15 +44,16 @@ public class ImageRestController {
 	}
 
 	@PostMapping(value = "/{imageCategory}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Operation(summary = "이미지 업로드", description = "이미지를 업로드합니다.")
 	public ImageResponseDto uploadImage(
-			@PathVariable ImageCategory imageCategory,
+			@Parameter(description = "이미지 카테고리", required = true) @PathVariable ImageCategory imageCategory,
 			@RequestParam MultipartFile image
 	) throws IOException {
 		final var imageFile = convert(image)
 				.orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
 
 		String uuid = UUID.randomUUID().toString();
-		
+
 		return new ImageResponseDto(
 				upload(imageFile, imageCategory, uuid),
 				imageCategory,
