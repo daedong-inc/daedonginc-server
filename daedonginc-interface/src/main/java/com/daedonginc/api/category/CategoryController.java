@@ -25,12 +25,17 @@ import com.daedonginc.category.usecase.CommandUpdateCategoryUseCase;
 import com.daedonginc.category.usecase.QueryCategoryAllUseCase;
 import com.daedonginc.category.usecase.QueryCategoryByIdUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * @author domo
  * Created on 2023/04/03
  */
 @RestController
 @RequestMapping("/api/v1/category")
+@Tag(name = "Category", description = "카테고리")
 public class CategoryController {
 	private final QueryCategoryByIdUseCase queryCategoryByIdUseCase;
 	private final QueryCategoryAllUseCase queryCategoryAllUseCase;
@@ -53,6 +58,7 @@ public class CategoryController {
 	}
 
 	@GetMapping
+	@Operation(summary = "카테고리 전체 조회", description = "카테고리를 전체 조회합니다")
 	public List<CategoryResponseDto> categoryAll() {
 		return queryCategoryAllUseCase.query().stream()
 				.map(CategoryMapper::toResponseDto)
@@ -60,7 +66,10 @@ public class CategoryController {
 	}
 
 	@GetMapping("/{categoryId}")
-	public CategoryResponseDto categoryById(@PathVariable final Long categoryId) {
+	@Operation(summary = "카테고리 조회", description = "카테고리를 조회합니다")
+	public CategoryResponseDto categoryById(
+			@Parameter(description = "카테고리 아이디", required = true) @PathVariable final Long categoryId
+	) {
 		Category category = queryCategoryByIdUseCase.query(
 				new QueryCategoryByIdUseCase.Query(categoryId)
 		);
@@ -69,6 +78,7 @@ public class CategoryController {
 
 	@AdminLoginCheck
 	@PostMapping
+	@Operation(summary = "카테고리 생성", description = "카테고리를 생성합니다")
 	public CategoryResponseDto createCategory(
 			@RequestBody @Validated final CreateCategoryRequestDto createCategoryRequestDto
 	) {
@@ -83,8 +93,9 @@ public class CategoryController {
 
 	@AdminLoginCheck
 	@PutMapping("/{id}")
+	@Operation(summary = "카테고리 수정", description = "카테고리를 수정합니다")
 	public void updateCategory(
-			@PathVariable final Long id,
+			@Parameter(description = "카테고리 아이디", required = true) @PathVariable final Long id,
 			@RequestBody @Validated final UpdateCategoryRequestDto updateCategoryRequestDto
 	) {
 		commandUpdateCategoryUseCase.command(
@@ -98,7 +109,10 @@ public class CategoryController {
 
 	@AdminLoginCheck
 	@DeleteMapping("/{id}")
-	public void deleteCategory(@PathVariable final Long id) {
+	@Operation(summary = "카테고리 삭제", description = "카테고리를 삭제합니다")
+	public void deleteCategory(
+			@Parameter(description = "카테고리 아이디", required = true) @PathVariable final Long id
+	) {
 		commandDeleteCategoryUseCase.command(
 				new CommandDeleteCategoryUseCase.Command(id)
 		);
