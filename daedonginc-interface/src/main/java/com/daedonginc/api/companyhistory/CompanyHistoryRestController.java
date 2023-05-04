@@ -24,12 +24,17 @@ import com.daedonginc.companyhistory.usecase.CommandDeleteComponyHistoryUseCase;
 import com.daedonginc.companyhistory.usecase.CommandUpdateComponyHistoryUseCase;
 import com.daedonginc.companyhistory.usecase.QueryCompanyHistoryAllUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 /**
  * @author domo
  * Created on 2023/03/29
  */
 @RestController
 @RequestMapping("/api/v1/company-history")
+@Tag(name = "CompanyHistory", description = "회사연혁")
 public class CompanyHistoryRestController {
 	private final QueryCompanyHistoryAllUseCase queryCompanyHistoryByAllUseCase;
 	private final CommandCreateComponyHistoryUseCase commandCreateComponyHistoryUseCase;
@@ -49,6 +54,7 @@ public class CompanyHistoryRestController {
 	}
 
 	@GetMapping
+	@Operation(summary = "회사연혁 조회", description = "회사 연혁을 조회합니다.")
 	public List<CompanyHistoryResponseDto> companyHistory() {
 		return queryCompanyHistoryByAllUseCase.query().stream()
 				.map(CompanyHistoryMapper::toResponseDto)
@@ -57,6 +63,7 @@ public class CompanyHistoryRestController {
 
 	@AdminLoginCheck
 	@PostMapping
+	@Operation(summary = "회사연혁 생성", description = "회사 연혁을 생성합니다.")
 	public CompanyHistoryResponseDto createCompanyHistory(
 			@RequestBody @Validated final CreateCompanyHistoryRequestDto dto
 	) {
@@ -71,8 +78,9 @@ public class CompanyHistoryRestController {
 
 	@AdminLoginCheck
 	@PutMapping("{id}")
+	@Operation(summary = "회사연혁 수정", description = "회사 연혁을 수정합니다.")
 	public void updateCompanyHistory(
-			@PathVariable final Long id,
+			@Parameter(description = "회사 연혁 ID", required = true) @PathVariable final Long id,
 			@RequestBody @Validated final UpdateCompanyHistoryRequestDto dto
 	) {
 		commandUpdateComponyHistoryUseCase.command(
@@ -82,7 +90,10 @@ public class CompanyHistoryRestController {
 
 	@AdminLoginCheck
 	@DeleteMapping("{id}")
-	public void deleteCompanyHistory(@PathVariable final Long id) {
+	@Operation(summary = "회사연혁 삭제", description = "회사 연혁을 삭제합니다.")
+	public void deleteCompanyHistory(
+			@Parameter(description = "회사 연혁 ID", required = true) @PathVariable final Long id
+	) {
 		commandDeleteComponyHistoryUseCase.command(
 				new CommandDeleteComponyHistoryUseCase.Command(id)
 		);
