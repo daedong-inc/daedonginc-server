@@ -26,6 +26,7 @@ import com.daedonginc.news.usecase.QueryNewsByIdAndNewsTypeUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author domo
@@ -33,6 +34,7 @@ import io.swagger.v3.oas.annotations.Parameter;
  */
 @RestController
 @RequestMapping("/api/v1/news")
+@Tag(name = "News", description = "뉴스")
 public class NewsController {
 	private final QueryNewsAllByNewsTypeUseCase queryNewsAllByNewsTypeUseCase;
 	private final QueryNewsByIdAndNewsTypeUseCase queryNewsByIdAndNewsTypeUseCase;
