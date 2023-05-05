@@ -1,0 +1,102 @@
+name: CI/CD
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: DEVELOP
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Connect deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          ghtoken: ${{ secrets.GHP_TOKEN }}
+      - name: Deploy
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          project: daedonginc96/daedonginc-server-develop
+          stage: develop
+          yaml: >
+            name: daedonginc-server
+
+            app: dockerfile
+
+            options:
+              ports: "8080"
+              dockerfile: .
+              dockerfiletext: |-
+                FROM openjdk:17 as builder
+
+                COPY gradlew .
+                COPY gradle gradle
+                COPY build.gradle .
+                COPY settings.gradle .
+                # RUN chmod +x commons
+                # RUN chmod +x daedonginc-domain
+                # RUN chmod +x daedonginc-infrastructure
+                # RUN chmod +x daedonginc-interface
+
+                COPY commons commons
+                COPY daedonginc-domain daedonginc-domain
+                COPY daedonginc-infrastructure daedonginc-infrastructure
+                COPY daedonginc-interface daedonginc-interface
+                RUN microdnf install findutils
+
+                RUN chmod +x ./gradlew
+                RUN ./gradlew daedonginc-infrastructure:persistence-database:clean
+                RUN ./gradlew daedonginc-interface:clean
+                RUN ./gradlew daedonginc-interface:bootjar
+
+                FROM openjdk:17 as runtime
+
+                COPY --from=builder daedonginc-interface/build/libs/*.jar app.jar
+
+                EXPOSE 80
+
+                ENTRYPOINT ["java", "-jar", "/app.jar"]
+              env:
+                - name: DATASOURCE_HOST
+                  value: ${{ secrets.DATASOURCE_HOST }}
+                - name: DATASOURCE_USERNAME
+                  value: ${{ secrets.DATASOURCE_USERNAME }}
+                - name: DATASOURCE_PASSWORD
+                  value: ${{ secrets.DATASOURCE_PASSWORD }}
+                - name: DATASOURCE_PORT
+                  value: ${{ secrets.DATASOURCE_PORT }}
+                - name: SPRING_PROFILES_ACTIVE
+                  value: dev
+                - name: S3_ACCESS_KEY
+                  value: ${{ secrets.S3_ACCESS_KEY }}
+                - name: S3_SECRET_KEY
+                  value: ${{ secrets.S3_SECRET_KEY }}
+                - name: S3_BUCKET_NAME
+                  value: ${{ secrets.S3_BUCKET_NAME }}
+              args:
+                - name: DATASOURCE_HOST
+                  value: ${{ secrets.DATASOURCE_HOST }}
+                - name: DATASOURCE_USERNAME
+                  value: ${{ secrets.DATASOURCE_USERNAME }}
+                - name: DATASOURCE_PASSWORD
+                  value: ${{ secrets.DATASOURCE_PASSWORD }}
+                - name: DATASOURCE_PORT
+                  value: ${{ secrets.DATASOURCE_PORT }}
+                - name: SPRING_PROFILES_ACTIVE
+                  value: dev
+                - name: S3_ACCESS_KEY
+                  value: ${{ secrets.S3_ACCESS_KEY }}
+                - name: S3_SECRET_KEY
+                  value: ${{ secrets.S3_SECRET_KEY }}
+                - name: S3_BUCKET_NAME
+                  value: ${{ secrets.S3_BUCKET_NAME }}
+            context:
+              git:
+                url: git@github.com:${{ github.repository }}.git
+                ref: ${{ github.ref }}
+              preset: dockerfile
