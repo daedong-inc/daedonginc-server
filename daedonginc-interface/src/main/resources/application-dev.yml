@@ -2,9 +2,6 @@ spring:
   config:
     activate:
       on-profile: "dev"
-  h2:
-    console:
-      enabled: false
   jpa:
     open-in-view: true
     hibernate:

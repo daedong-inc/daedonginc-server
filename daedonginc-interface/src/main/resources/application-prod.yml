@@ -2,9 +2,6 @@ spring:
   config:
     activate:
       on-profile: "prod"
-  h2:
-    console:
-      enabled: false
   jpa:
     hibernate:
       ddl-auto: none
