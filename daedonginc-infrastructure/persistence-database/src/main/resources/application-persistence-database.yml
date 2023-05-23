@@ -4,3 +4,6 @@ spring:
     url: jdbc:mysql://${DATASOURCE_HOST:localhost}:${DATASOURCE_PORT:3306}/daedonginc?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: ${DATASOURCE_USERNAME:root}
     password: ${DATASOURCE_PASSWORD:}
+  h2:
+    console:
+      enabled: false
